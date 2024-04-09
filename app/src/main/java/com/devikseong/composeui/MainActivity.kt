@@ -9,6 +9,7 @@ import android.telephony.SmsManager
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,10 +21,12 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Slider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -31,9 +34,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.startActivity
@@ -77,29 +82,70 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    SmsScreen()
+                    DemoScreen()
+                    //SmsScreen()
                 }
             }
         }
     }
 }
 
+@Preview
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
+fun DemoTextPreview() {
+    DemoText("TEST12" , 12f)
+}
+
+@Composable
+fun DemoText(message: String, fontSize:Float) {
     Text(
-        text = "Hello $name!",
-        modifier = modifier
+        text = message,
+        fontSize = fontSize.sp,
+        fontWeight = FontWeight.Bold
     )
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun GreetingPreview() {
-    ComposeUITheme {
-        Greeting("Android")
+fun DemoScreen() {
+    var sliderPosition by remember { mutableFloatStateOf(20f) }
+
+    val handlePositionChange = { position : Float ->
+        sliderPosition = position
+    }
+
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+        modifier = Modifier.fillMaxSize()
+    ) {
+        DemoText(message = "Wecome to Compose", fontSize = sliderPosition)
+
+        Spacer(modifier = Modifier.height(150.dp))
+
+        DemoSlider(
+            sliderPosition = sliderPosition,
+            onPositionChange = handlePositionChange
+        )
+        
+        Text(
+            style = MaterialTheme.typography.headlineLarge,
+            text = sliderPosition.toInt().toString() + "sp"
+        )
     }
 }
 
+@Composable
+fun DemoSlider(sliderPosition: Float, onPositionChange: (Float) -> Unit) {
+    Slider(
+        modifier = Modifier.padding(10.dp),
+        valueRange = 20f..40f,
+        value = sliderPosition,
+        onValueChange = onPositionChange
+    )
+}
+
+//@Preview(showSystemUi = true)
 @Composable
 fun SmsScreen() {
     val context = LocalContext.current
