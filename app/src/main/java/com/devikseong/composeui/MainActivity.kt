@@ -23,7 +23,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -34,6 +36,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.semantics.Role.Companion.Switch
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
@@ -119,7 +122,7 @@ fun DemoScreen() {
         verticalArrangement = Arrangement.Center,
         modifier = Modifier.fillMaxSize()
     ) {
-        DemoText(message = "Wecome to Compose", fontSize = sliderPosition)
+        DemoText(message = "Wecome to Compose 1", fontSize = sliderPosition)
 
         Spacer(modifier = Modifier.height(150.dp))
 
@@ -142,6 +145,70 @@ fun DemoSlider(sliderPosition: Float, onPositionChange: (Float) -> Unit) {
         valueRange = 20f..40f,
         value = sliderPosition,
         onValueChange = onPositionChange
+    )
+}
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun DemoView() {
+    var value by remember{ mutableStateOf("HAHA1") }
+
+    val closure = { data: String ->
+        value = data
+    }
+
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+        modifier = Modifier.fillMaxSize()
+    ) {
+        Text("Print Data $value")
+        Spacer(modifier = Modifier.height(100.dp))
+        Text("Print Data End")
+
+        println("TEST 0 >>")
+
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+
+        ) {
+            val checked = remember{ mutableStateOf(false) }
+
+            Switch(
+                checked = checked.value,
+                onCheckedChange = { checked.value = it }
+            )
+
+            println("TEST 1 >>")
+
+            if(checked.value) {
+                Text("Switch is On")
+            } else {
+                Text("Switch is Off")
+            }
+        }
+    }
+
+}
+
+@Preview(showSystemUi = true, showBackground = true)
+@Composable
+fun DemoTest2View() {
+    MyTextField()
+}
+
+@Composable
+fun MyTextField() {
+    val textState = remember{ mutableStateOf("")}
+
+    val onTextChnage = { text: String ->
+        textState.value = text
+    }
+
+    TextField(
+        value = textState.value,
+        onValueChange = onTextChnage
     )
 }
 
